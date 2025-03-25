@@ -42,7 +42,7 @@ def add_practice_sessions():
 
 
 # get all practice sessions for a user
-@app.route('/practice_sessions/<int:user_id>', methods=['GET'])
+@app.route('/<int:user_id>/practice_sessions', methods=['GET'])
 def fetch_user_sessions(user_id):
     sessions = get_all_user_practice_sessions(user_id)
     
