@@ -62,7 +62,7 @@ def insert_practice_session(user_id, piece, date, start_time, end_time, notes, i
     connection.commit()
     connection.close()
 
-def get_user_practice_sessions(user_id):
+def get_all_user_practice_sessions(user_id):
     """Retrieving all practice sessions associated with given user_id."""
     # establishing connection
     connection = sqlite3.connect('practice_sessions.db')
@@ -76,6 +76,22 @@ def get_user_practice_sessions(user_id):
     connection.close()
     return sessions
 
+def get_practice_session(session_id):
+    connection = sqlite3.connect('practice_sessions.db')
+    cursor = connection.cursor()
+
+    cursor.execute ("SELECT * FROM practice_sessions WHERE id = ?", (session_id,))
+    session = cursor.fetchone()
+    
+    if not session:
+        #TODO throw exception? is there a better way to see if the session exists?
+        print("session not found")
+        connection.close()
+        return
+
+    connection.commit()
+    connection.close()
+    return session
 
 def update_practice_session(session_id, piece=None, start_time=None, end_time=None, notes=None, instrument=None):
     connection = sqlite3.connect('practice_sessions.db')
@@ -128,5 +144,3 @@ def delete_practice_session(session_id):
     cursor.execute("DELETE FROM practice_sessions WHERE id = ?", (session_id,))
     connection.commit()
     connection.close()
-
-delete_practice_session(2)
