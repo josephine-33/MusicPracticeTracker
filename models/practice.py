@@ -3,7 +3,7 @@ from datetime import datetime
 
 def insert_practice_session(user_id, piece, date, start_time, end_time, notes, instrument):
     # establishing connection
-    connection = sqlite3.connect('practice_sessions.db')
+    connection = sqlite3.connect('instance/practice_sessions.db')
     cursor = connection.cursor()
 
     # Convert string timestamps to datetime objects
@@ -26,7 +26,7 @@ def insert_practice_session(user_id, piece, date, start_time, end_time, notes, i
 def get_all_user_practice_sessions(user_id):
     """Retrieving all practice sessions associated with given user_id."""
     # establishing connection
-    connection = sqlite3.connect('practice_sessions.db')
+    connection = sqlite3.connect('instance/practice_sessions.db')
     cursor = connection.cursor()
 
     # getting sessions
@@ -38,9 +38,10 @@ def get_all_user_practice_sessions(user_id):
     return sessions
 
 def get_practice_session(session_id):
-    connection = sqlite3.connect('practice_sessions.db')
-    cursor = connection.cursor()
+    connection = sqlite3.connect('instance/practice_sessions.db')
+    connection.row_factory = sqlite3.Row
 
+    cursor = connection.cursor()
     cursor.execute ("SELECT * FROM practice_sessions WHERE id = ?", (session_id,))
     session = cursor.fetchone()
     
@@ -50,12 +51,11 @@ def get_practice_session(session_id):
         connection.close()
         return
 
-    connection.commit()
     connection.close()
-    return session
+    return dict(session)
 
 def update_practice_session(session_id, piece=None, start_time=None, end_time=None, notes=None, instrument=None):
-    connection = sqlite3.connect('practice_sessions.db')
+    connection = sqlite3.connect('instance/practice_sessions.db')
     cursor = connection.cursor()
 
     cursor.execute ("SELECT * FROM practice_sessions WHERE id = ?", (session_id,))
@@ -68,6 +68,7 @@ def update_practice_session(session_id, piece=None, start_time=None, end_time=No
         return
 
     # keep existing values if new ones aren't provided
+    # date = date if date else session[1]
     piece = piece if piece else session[2]
     start_time = start_time if start_time else session[4]
     end_time = end_time if end_time else session[5]
@@ -89,7 +90,7 @@ def update_practice_session(session_id, piece=None, start_time=None, end_time=No
     connection.close()
 
 def delete_practice_session(session_id):
-    connection = sqlite3.connect('practice_sessions.db')
+    connection = sqlite3.connect('instance/practice_sessions.db')
     cursor = connection.cursor()
 
     cursor.execute ("SELECT * FROM practice_sessions WHERE id = ?", (session_id,))
