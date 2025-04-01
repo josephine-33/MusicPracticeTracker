@@ -56,7 +56,7 @@ def fetch_user_session():
 def fetch_practice_session(session_id):
     user_id = get_user_from_token()
     if not user_id:
-        return jsonify({"error": "Unauthorized"}, 401)
+        return jsonify({"error": "Unauthorized"}), 401
     
     session = get_practice_session(session_id)
     if not session:
@@ -78,8 +78,11 @@ def modify_practice_session(session_id):
     if session["user_id"] != user_id:
         return jsonify({"error": "Unauthorized"}), 401
     
+    print("debug: ")
+    print(session)
+
     data = request.json
-    update_practice_session(session_id, user_id, **data)
+    update_practice_session(session_id, **data)
     return jsonify({"message": "Practice session updated successfully!"})
 
 @session_routes.route("/practice_sessions/<int:session_id>", methods=["DELETE"])

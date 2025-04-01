@@ -54,7 +54,7 @@ def get_practice_session(session_id):
     connection.close()
     return dict(session)
 
-def update_practice_session(session_id, piece=None, start_time=None, end_time=None, notes=None, instrument=None):
+def update_practice_session(session_id, date=None, piece=None, start_time=None, end_time=None, notes=None, instrument=None):
     connection = sqlite3.connect('instance/practice_sessions.db')
     cursor = connection.cursor()
 
@@ -68,7 +68,7 @@ def update_practice_session(session_id, piece=None, start_time=None, end_time=No
         return
 
     # keep existing values if new ones aren't provided
-    # date = date if date else session[1]
+    date = date if date else session[3]
     piece = piece if piece else session[2]
     start_time = start_time if start_time else session[4]
     end_time = end_time if end_time else session[5]
@@ -82,9 +82,9 @@ def update_practice_session(session_id, piece=None, start_time=None, end_time=No
 
     cursor.execute("""
         UPDATE practice_sessions
-        SET piece = ?, start_time = ?, end_time = ?, duration = ?, notes = ?, instrument = ?
+        SET date = ?, piece = ?, start_time = ?, end_time = ?, duration = ?, notes = ?, instrument = ?
         WHERE id = ?
-        """, (piece, start_time, end_time, duration, notes, instrument, session_id))
+        """, (date, piece, start_time, end_time, duration, notes, instrument, session_id))
     
     connection.commit()
     connection.close()
