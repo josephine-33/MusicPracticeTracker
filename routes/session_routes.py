@@ -78,8 +78,6 @@ def modify_practice_session(session_id):
     if session["user_id"] != user_id:
         return jsonify({"error": "Unauthorized"}), 401
     
-    print("debug: ")
-    print(session)
 
     data = request.json
     update_practice_session(session_id, **data)
@@ -97,5 +95,5 @@ def remove_practice_session(session_id):
     if session["user_id"] != user_id:
         return jsonify({"error": "Unauthorized"}), 401
     
-    delete_practice_session(session_id, user_id)
+    delete_practice_session(session_id)
     return jsonify({"message": "Practice session deleted successfully!"})
